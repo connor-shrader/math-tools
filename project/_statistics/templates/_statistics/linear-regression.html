@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Linear Regression</h1>
+
+<form method="POST">
+    {{ form.hidden_tag() }}
+    <div class="container">
+        <div style="overflow-y: scroll; max-height: 380px" class="p-2">
+            {% for entry in form.coordinates %}
+                <div class="input-group">
+                {{ form.hidden_tag() }}
+                {{ entry.x_coordinate(class="form-control form-control-sm") }}
+                {{ entry.y_coordinate(class="form-control form-control-sm") }}
+                <br>
+                </div>
+            {% endfor %}
+        </div>
+        <div class="input-group p-2">
+            {% if length != form.coordinates.max_entries %}
+                {{ form.add_entry(class="btn btn-secondary") }}
+            {% else %}
+                {{ form.add_entry(class="btn btn-secondary disabled") }}
+            {% endif %}
+
+            {% if length != form.coordinates.min_entries %}
+                {{ form.remove_entry(class = "btn btn-secondary")}}
+            {% else %}
+                {{ form.remove_entry(class = "btn btn-secondary disabled")}}
+            {% endif %}
+        </div>
+        <div class="input-group p-2">
+            {{ form.submit(class="btn btn-primary") }}
+        </div>
+    </div>
+</form>
+
+{% if form.plot_json.data %}
+<img src="{{ url_for('statistics.linear_regression_plot', data_json = form.plot_json.data) }}" alt="test">
+{% endif %}
+{% endblock %}
