@@ -16,36 +16,49 @@ statistics = Blueprint('statistics', __name__, template_folder='templates/_stati
 @statistics.route('/linear-regression', methods=['GET', 'POST'])
 def linear_regression():
     form = LinearRegressionForm()
-    print(form.plot_success.data)
-    plot_generated = False
-    data = {'x': [], 'y': []}
+
+    length = len(form.coordinates.entries)
     data_json = None
+    count = 0
+    scroll = None
 
     if form.add_entry.data:
         form.coordinates.append_entry()
+        length += 1
+        scroll = 'coordinates-{}-x_coordinate'.format(length - 1)
 
     elif form.remove_entry.data:
         form.coordinates.pop_entry()
+        length -= 1
+
+    elif form.clear.data:
+        return redirect(url_for('statistics.linear_regression'))
 
     elif form.validate_on_submit():
         print('validated')
+        data = {'x': [], 'y': []}
         for entry in form.coordinates.entries:
             x = entry.x_coordinate.data
             y = entry.y_coordinate.data
             if x and y:
                 data['x'].append(x)
                 data['y'].append(y)
-        plot_generated = True
-        data_json = json.dumps(data)
-        form.plot_success.data = 'True'
-        form.plot_json.data = data_json
-        print('hi', form.plot_json.data)
+            elif x or y:
+                count += 1
+            data_json = json.dumps(data)
+            form.plot_json.data = data_json
 
+    if count > 1:
+        flash('Several failed')
+    elif count == 1:
+        flash('One fail')
+
+    print(length)
     return render_template('linear-regression.html',
                             form = form, 
-                            length = len(form.coordinates.entries),
-                            plot_generated = plot_generated,
-                            data_json = data_json)
+                            length = length,
+                            data_json = data_json,
+                            scroll = scroll)
 
 # @statistics.route('/test_img', methods=['GET', 'POST'])
 # def test_image():
@@ -65,17 +78,15 @@ def linear_regression():
 @statistics.route('/linear-regression/plot', methods=['GET', 'POST'])
 def linear_regression_plot():
     data_json = request.args.get('data_json')
-    print(data_json, "hi")
     data = json.load(StringIO(data_json))
-    print(data)
     df = pd.DataFrame(data = data)
-    print(df)
 
     fig = plt.figure()
     axes = fig.add_axes([0, 0, 1, 1])
-    fig.tight_layout()
     fig.set_size_inches(2, 2)
-    sns.scatterplot(data = data, x='x', y='y', ax=axes, s=10)
+    axes.set_xlabel('x')
+    axes.set_ylabel('y')
+    sns.regplot(data = df, x='x', y='y', ax=axes)
     strIO = BytesIO()
     plt.savefig(strIO, dpi=300, bbox_inches='tight')
     strIO.seek(0)

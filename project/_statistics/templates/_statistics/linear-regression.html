@@ -1,41 +1,87 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1>Linear Regression</h1>
-
-<form method="POST">
-    {{ form.hidden_tag() }}
-    <div class="container">
-        <div style="overflow-y: scroll; max-height: 380px" class="p-2">
-            {% for entry in form.coordinates %}
-                <div class="input-group">
-                {{ form.hidden_tag() }}
-                {{ entry.x_coordinate(class="form-control form-control-sm") }}
-                {{ entry.y_coordinate(class="form-control form-control-sm") }}
-                <br>
-                </div>
-            {% endfor %}
-        </div>
-        <div class="input-group p-2">
-            {% if length != form.coordinates.max_entries %}
-                {{ form.add_entry(class="btn btn-secondary") }}
-            {% else %}
-                {{ form.add_entry(class="btn btn-secondary disabled") }}
-            {% endif %}
-
-            {% if length != form.coordinates.min_entries %}
-                {{ form.remove_entry(class = "btn btn-secondary")}}
-            {% else %}
-                {{ form.remove_entry(class = "btn btn-secondary disabled")}}
-            {% endif %}
-        </div>
-        <div class="input-group p-2">
-            {{ form.submit(class="btn btn-primary") }}
-        </div>
+<div class="container my-4">
+    <div class="text-center">
+        <h1>Linear Regression Calculator</h1><br>
+        <p>
+            This calculator will compute the linear regression line for a set of data.
+        </p>
+        <p>
+            Use the table below to enter a set of ordered pairs, then press "calculate."
+        </p>
     </div>
-</form>
+    
+</div>
 
-{% if form.plot_json.data %}
-<img src="{{ url_for('statistics.linear_regression_plot', data_json = form.plot_json.data) }}" alt="test">
+<div class="container">
+    <div class="row mb-3">
+        <div style="max-width: 400px" class="text-center col-lg d-flex align-items-center flex-column pe-3 ps-2">
+            <div class="input-group">
+                <div class="rounded-0 form-control form-control-sm  bg-secondary text-white border-secondary">x
+                </div>
+                <div class="rounded-0 form-control form-control-sm  bg-secondary text-white border-secondary">y
+                </div>
+            </div>
+            <form method="POST" id="coordinate-form">
+                {{ form.hidden_tag() }}
+                <div style="overflow-y: overlay; height: 310px; max-width: 400px">
+                    {% for entry in form.coordinates %}
+                    <div class="input-group">
+                        {{ entry.x_coordinate(class="rounded-0 form-control form-control-sm") }}
+                        {{ entry.y_coordinate(class="rounded-0 form-control form-control-sm") }}
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="input-group p-2 d-flex justify-content-center">
+                    {% if length != form.coordinates.max_entries %}
+                    {{ form.add_entry(class="btn btn-secondary rounded-start", id="add") }}
+                    {% else %}
+                    {{ form.add_entry(class="btn btn-secondary rounded-start disabled", id="add") }}
+                    {% endif %}
+
+                    {% if length != form.coordinates.min_entries %}
+                    {{ form.remove_entry(class = "btn btn-secondary border-start rounded-end")}}
+                    {% else %}
+                    {{ form.remove_entry(class = "btn btn-secondary border-start rounded-end disabled")}}
+                    {% endif %}
+
+                    {{ form.clear(class="btn btn-danger rounded ms-auto me-2") }}
+                </div>
+                <div class="input-group d-flex justify-content-center">
+                    
+                </div>
+                <div class="input-group d-flex justify-content-center">
+                    {{ form.submit(class="btn btn-primary btn-lg rounded") }}
+                </div>
+            </form>
+        </div>
+        {% if form.plot_json.data %}
+        <div class="col-lg text-center d-flex align-items-center justify-content-center">
+            <img width=360 height=360
+                src="{{ url_for('statistics.linear_regression_plot', data_json = form.plot_json.data) }}" alt="test">
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- https://stackoverflow.com/questions/31863582/automatically-scroll-to-a-div-when-flask-returns-rendered-template -->
+{% if scroll %}
+<script>
+    document.getElementById('{{ scroll }}').focus();
+</script>
 {% endif %}
+<script>
+    const maxEntries = Number('{{ form.coordinates.max_entries }}')
+    const length = Number('{{ length }}')
+    document.getElementById('coordinates-' + (length - 1) + '-y_coordinate').onkeydown = PresTab;
+
+    function PresTab(e) {
+        var keycode = (window.event) ? event.keyCode : e.keyCode;
+        if (keycode == 9 && length != maxEntries)
+            document.getElementById('add').click()
+    }
+</script>
+
+
 {% endblock %}
