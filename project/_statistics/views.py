@@ -32,7 +32,9 @@ def linear_regression():
         length -= 1
 
     elif form.clear.data:
-        return redirect(url_for('statistics.linear_regression'))
+        data_json = form.plot_json.data
+        form = LinearRegressionForm(formdata=None)
+        form.plot_json.data = data_json
 
     elif form.validate_on_submit():
         print('validated')
@@ -46,14 +48,13 @@ def linear_regression():
             elif x or y:
                 count += 1
             data_json = json.dumps(data)
-            form.plot_json.data = data_json
+            form.data_json.data = data_json
 
     if count > 1:
         flash('Several failed')
     elif count == 1:
         flash('One fail')
 
-    print(length)
     return render_template('linear-regression.html',
                             form = form, 
                             length = length,

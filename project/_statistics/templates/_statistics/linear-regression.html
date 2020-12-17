@@ -11,55 +11,54 @@
             Use the table below to enter a set of ordered pairs, then press "calculate."
         </p>
     </div>
-    
 </div>
-
 <div class="container">
-    <div class="row mb-3">
-        <div style="max-width: 400px" class="text-center col-lg d-flex align-items-center flex-column pe-3 ps-2">
-            <div class="input-group">
-                <div class="rounded-0 form-control form-control-sm  bg-secondary text-white border-secondary">x
-                </div>
-                <div class="rounded-0 form-control form-control-sm  bg-secondary text-white border-secondary">y
-                </div>
-            </div>
-            <form method="POST" id="coordinate-form">
-                {{ form.hidden_tag() }}
-                <div style="overflow-y: overlay; height: 310px; max-width: 400px">
-                    {% for entry in form.coordinates %}
-                    <div class="input-group">
-                        {{ entry.x_coordinate(class="rounded-0 form-control form-control-sm") }}
-                        {{ entry.y_coordinate(class="rounded-0 form-control form-control-sm") }}
+    <div class="row d-flex justify-content-center">
+        <div class="col-lg d-flex justify-content-center">
+            <div style="max-width: 400px;">
+                <div class="input-group text-center">
+                    <div class="rounded-0 form-control form-control-sm  bg-secondary text-white border-secondary">x
                     </div>
-                    {% endfor %}
+                    <div class="rounded-0 form-control form-control-sm  bg-secondary text-white border-secondary">y
+                    </div>
                 </div>
-                <div class="input-group p-2 d-flex justify-content-center">
-                    {% if length != form.coordinates.max_entries %}
-                    {{ form.add_entry(class="btn btn-secondary rounded-start", id="add") }}
-                    {% else %}
-                    {{ form.add_entry(class="btn btn-secondary rounded-start disabled", id="add") }}
-                    {% endif %}
+                <form method="POST" id="coordinate-form">
+                    {{ form.hidden_tag() }}
+                    <div style="overflow-y: overlay; height: 310px">
+                        {% for entry in form.coordinates %}
+                        <div class="input-group">
+                            {{ entry.x_coordinate(class="rounded-0 form-control form-control-sm") }}
+                            {{ entry.y_coordinate(class="rounded-0 form-control form-control-sm") }}
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <div class="input-group p-2 d-flex justify-content-center">
+                        {% if length != form.coordinates.max_entries %}
+                        {{ form.add_entry(class="btn btn-secondary rounded-start", id="add") }}
+                        {% else %}
+                        {{ form.add_entry(class="btn btn-secondary rounded-start disabled", id="add") }}
+                        {% endif %}
 
-                    {% if length != form.coordinates.min_entries %}
-                    {{ form.remove_entry(class = "btn btn-secondary border-start rounded-end")}}
-                    {% else %}
-                    {{ form.remove_entry(class = "btn btn-secondary border-start rounded-end disabled")}}
-                    {% endif %}
+                        {% if length != form.coordinates.min_entries %}
+                        {{ form.remove_entry(class = "btn btn-secondary border-start rounded-end")}}
+                        {% else %}
+                        {{ form.remove_entry(class = "btn btn-secondary border-start rounded-end disabled")}}
+                        {% endif %}
 
-                    {{ form.clear(class="btn btn-danger rounded ms-auto me-2") }}
-                </div>
-                <div class="input-group d-flex justify-content-center">
-                    
-                </div>
-                <div class="input-group d-flex justify-content-center">
-                    {{ form.submit(class="btn btn-primary btn-lg rounded") }}
-                </div>
-            </form>
+                        {{ form.clear(class="btn btn-danger rounded ms-auto me-2") }}
+                    </div>
+                    <div class="input-group d-flex justify-content-center">
+                        
+                    </div>
+                    <div class="input-group d-flex justify-content-center">
+                        {{ form.submit(class="btn btn-primary btn-lg rounded", id="calculate") }}
+                    </div>
+                </form>
+            </div>
         </div>
-        {% if form.plot_json.data %}
-        <div class="col-lg text-center d-flex align-items-center justify-content-center">
-            <img width=360 height=360
-                src="{{ url_for('statistics.linear_regression_plot', data_json = form.plot_json.data) }}" alt="test">
+        {% if form.data_json.data %}
+        <div class="col-lg d-flex justify-content-center align-items-center">
+            <img width=360 height=360 src="{{ url_for('statistics.linear_regression_plot', data_json = form.data_json.data) }}" alt="test">
         </div>
         {% endif %}
     </div>
@@ -76,11 +75,20 @@
     const length = Number('{{ length }}')
     document.getElementById('coordinates-' + (length - 1) + '-y_coordinate').onkeydown = PresTab;
 
+    console.log('hooray')
+
     function PresTab(e) {
         var keycode = (window.event) ? event.keyCode : e.keyCode;
         if (keycode == 9 && length != maxEntries)
             document.getElementById('add').click()
     }
+
+    document.addEventListener("keydown", function (event) {
+        if (event.keyCode === 13) {
+            event.preventDefault();
+            document.getElementById('calculate').click()
+        }
+    });
 </script>
 
 

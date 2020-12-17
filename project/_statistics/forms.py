@@ -26,7 +26,7 @@ class CoordinateForm(FlaskForm):
 class LinearRegressionForm(FlaskForm):
     coordinates = FieldList(FormField(CoordinateForm), min_entries = 1, max_entries=1000)
     form_initialized = HiddenField()
-    plot_json = HiddenField()
+    data_json = HiddenField()
 
     add_entry = SubmitField('Add row')
     remove_entry = SubmitField('Remove row')
