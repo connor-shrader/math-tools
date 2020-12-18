@@ -75,8 +75,6 @@
     const length = Number('{{ length }}')
     document.getElementById('coordinates-' + (length - 1) + '-y_coordinate').onkeydown = PresTab;
 
-    console.log('hooray')
-
     function PresTab(e) {
         var keycode = (window.event) ? event.keyCode : e.keyCode;
         if (keycode == 9 && length != maxEntries)

@@ -35,7 +35,6 @@ class LinearRegressionForm(FlaskForm):
 
     def __init__(self, *args, **kwargs):
         FlaskForm.__init__(self, *args, **kwargs)
-        print(self.form_initialized.data)
         # Adds 9 more entries when the form is first created.
         if not self.form_initialized.data:
             for i in range(0, 9):
