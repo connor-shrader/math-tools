@@ -12,7 +12,7 @@ class CoordinateForm(FlaskForm):
         FlaskForm.__init__(self, *args, **kwargs)
 
 class LinearRegressionForm(FlaskForm):
-    coordinates = FieldList(FormField(CoordinateForm), min_entries = 1, max_entries=1000)
+    coordinates = FieldList(FormField(CoordinateForm), min_entries = 2, max_entries=1000)
 
     # This field will be set to true after the form is created, and will
     # always stay true. The purpose of this field is to create 9 extra
@@ -28,9 +28,9 @@ class LinearRegressionForm(FlaskForm):
     def __init__(self, *args, **kwargs):
         FlaskForm.__init__(self, *args, **kwargs)
 
-        # Adds 9 more entries when the form is first created.
+        # Adds 8 more entries when the form is first created.
         if not self.form_initialized.data:
-            for i in range(0, 9):
+            for i in range(0, 8):
                 self.coordinates.append_entry()
             self.form_initialized.data = 'True'
         

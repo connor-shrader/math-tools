@@ -20,7 +20,26 @@
                 </button>
             </h2>
             <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne">
-                <div class="accordion-body">t</div>
+                <div class="accordion-body">
+                    <p>A <a href="https://en.wikipedia.org/wiki/Linear_regression.">linear regression</a> model is a way
+                        to study the relationship between several related variables using a linear function. Usually,
+                        one of
+                        these variables is called the <em>dependent</em> or <em>response</em> variable, while the other
+                        variables are called the
+                        <em>independent</em> or <em>explanatory</em> variables. A linear regression model can be
+                        used to
+                        predict the value of the dependent variable when only the independent variables are known.
+
+                    <p>
+                        This calculator uses simple linear regression</a>, which means that there is only one
+                        independent variable. The output from this calculator
+                        is a line of best fit for a set of data.
+                    </p>
+
+                    <p>There are actually many different ways to define a line of best fit. This
+                        calculator
+                        uses the <a href="https://en.wikipedia.org/wiki/Least_squares">least-squares approach</a>. </p>
+                </div>
             </div>
         </div>
         <div class="accordion-item">
@@ -34,14 +53,16 @@
                 <div class="accordion-body">
                     <p>
                         Enter a list of ordered pairs in the table below. Each row should contain
-                        the x and y value of a single ordered pair. Once you have entered all of your data, click
-                        'Calculate' to determine the line of best fit for the data.
+                        the x and y value of a single data point (typically, x is considered the independent variable and y is
+                        the dependent variable). Once you have entered all of your data, click
+                        'Calculate' to determine the line of best fit for the data. Note that:
                     </p>
                     <ul>
                         <li>You cannot enter more than 1000 data points.</li>
-                        <li>Any blank rows will be ignored.</li>
-                        <li>Any rows that contain do not contain both an x-coordinate and a y-coordinate will also be
+                        <li>Any rows that do not have both an x-coordinate and a y-coordinate will be
                             ignored.</li>
+                        <li>Your data must contain at least two data points.</li>
+                        <li>Your data must contain at least two unique x values.</li>
                     </ul>
                 </div>
             </div>
@@ -54,7 +75,8 @@
             <div id="flush-collapseThree" class="accordion-collapse collapse" aria-labelledby="flush-headingThree">
                 <div class="accordion-body">
                     <p>
-                        This calculator will give you two results: the line of best fit and the coefficient of determination
+                        This calculator will give you two results: the line of best fit and the coefficient of
+                        determination
                         (also called r<sup>2</sup>).
                     </p>
                     <p>
@@ -72,9 +94,12 @@
                         If you get a low value for r<sup>2</sup>, there are a few possibilities:
                     </p>
                     <ul>
-                        <li>A linear model is not a good fit for your data. There may be a better model for your data, such as a quadratic model.</li>
-                        <li>There is simply a weak correlation between your independent variable and your dependent variable.</li>
-                        <li>You do not have enough data points. The number of data points that you'll need will depend on the context, but you should try to use as much data as possible.</li>
+                        <li>A linear model is not a good fit for your data. There may be a better model for your data,
+                            such as a quadratic model.</li>
+                        <li>There is simply a weak correlation between your independent variable and your dependent
+                            variable.</li>
+                        <li>You do not have enough data points. The number of data points that you'll need will depend
+                            on the context, but you should try to use as much data as possible.</li>
                     </ul>
                 </div>
             </div>
@@ -125,27 +150,26 @@
 </div>
 <br>
 <!-- RESULTS -->
-{% if form.data_json.data %}
+{% if invalid_line == False %}
 <div class="container text-center border-top border-3" style="max-width: 600px;">
     <br>
     <img width=360 height=360
         src="{{ url_for('statistics.linear_regression_plot', data_json = form.data_json.data, alpha = alpha, beta = beta) }}"
-        alt="test"
-        style="margin-right: 100px">
+        alt="test" style="margin-right: 100px">
 </div>
 <div class="container" style="max-width: 600px;">
     <table class="table table-borderless" id="table">
         <tbody>
-          <tr>
-            <td class="text-end">Line of best fit:</td>
-            <td style="width: 300px">{{ line_of_best_fit }}</td>
-          </tr>
-          <tr>
-            <td class="text-end" style="width: 300px">Coefficient of determination:</td>
-            <td style="width: 300px">r<sup>2</sup> = {{ r2 }}</td>
-          </tr>
+            <tr>
+                <td class="text-end">Line of best fit:</td>
+                <td style="width: 300px">{{ line_of_best_fit }}</td>
+            </tr>
+            <tr>
+                <td class="text-end" style="width: 300px">Coefficient of determination:</td>
+                <td style="width: 300px">r<sup>2</sup> = {{ r2 }}</td>
+            </tr>
         </tbody>
-      </table>
+    </table>
 </div>
 {% endif %}
 
@@ -154,7 +178,7 @@
 <script>
     const scrollTo = '{{ scroll }}'
     if (scrollTo === 'table') {
-        setTimeout(() => {document.getElementById(scrollTo).scrollIntoView();}, 50);
+        setTimeout(() => { document.getElementById(scrollTo).scrollIntoView(); }, 50);
     }
     else {
         document.getElementById(scrollTo).focus();

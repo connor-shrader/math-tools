@@ -19,6 +19,7 @@ def linear_regression():
     scroll = None
     alpha, beta, r2 = None, None, None
     line_of_best_fit = None
+    invalid_line = True
 
     if form.add_entry.data:
         form.coordinates.append_entry()
@@ -36,19 +37,28 @@ def linear_regression():
 
     elif form.submit.data:
         data, partial_entry_count = process_coordinates(form.coordinates)
-        
+
         if partial_entry_count > 1:
-            flash('Several of your ordered pairs are missing one of their coordinates, so they were ignored.')
+            flash('Warning: Several of your ordered pairs are missing one of their coordinates, so they were ignored.')
         elif partial_entry_count == 1:
-            flash('One of your ordered pairs is missing one of its coordinates, so it was ignored.')
+            flash('Warning: One of your ordered pairs is missing one of its coordinates, so it was ignored.')
 
-        alpha, beta, r2 = compute_linear_fit(data)
-        if isnan(beta) or isnan(r2):
-            flash('Warning: there was a division by 0 error. Make sure that you have multiple different x values in your data.')
+        if len(data['x']) > 1:
+            alpha, beta, r2 = compute_linear_fit(data)
+            r2 = round(r2, 5)
+            if isnan(beta) or isnan(r2):
+                flash('Error: A line of best fit could not be found. Make sure that you have at least two different x-values in your data.')
+                invalid_line = True
 
-        form.data_json.data = dumps(data)
-        line_of_best_fit = format_best_fit(alpha, beta)
-        scroll = "table"
+            scroll = "table"
+
+            line_of_best_fit = format_best_fit(alpha, beta)
+            form.data_json.data = dumps(data)
+
+            invalid_line = False
+        else:
+            flash('Error: Only one valid coordinate was entered.')
+            invalid_line = True
 
     return render_template(
         'linear-regression.html',
@@ -58,7 +68,8 @@ def linear_regression():
         alpha = alpha,
         beta = beta,
         line_of_best_fit = line_of_best_fit,
-        r2 = r2
+        r2 = r2,
+        invalid_line = invalid_line
 )
 
 # @statistics.route('/test_img', methods=['GET', 'POST'])
@@ -79,11 +90,16 @@ def linear_regression():
 @statistics.route('/linear-regression/plot', methods=['GET', 'POST'])
 def linear_regression_plot():
     data_json = request.args.get('data_json')
-    alpha = float(request.args.get('alpha'))
-    beta = float(request.args.get('beta'))
+    alpha = request.args.get('alpha')
+    beta = request.args.get('beta')
+    if alpha is not None and beta is not None:
+        alpha = float(alpha)
+        beta = float(beta)
 
-    df = json_to_dataframe(data_json)
-    strIO = plot_data(df, alpha, beta)
-    strIO.seek(0)
+        df = json_to_dataframe(data_json)
+        strIO = plot_data(df, alpha, beta)
+        strIO.seek(0)
 
-    return send_file(strIO, mimetype='image/png')
+        return send_file(strIO, mimetype='image/png')
+    else:
+        return None
