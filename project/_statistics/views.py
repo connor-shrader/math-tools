@@ -4,7 +4,10 @@ from flask import Blueprint, render_template, redirect, url_for, send_file
 from math import isnan
 from simplejson import dumps
 
-from .linear_regression import process_coordinates, json_to_dataframe, plot_data, compute_linear_fit
+from .linear_regression import (
+    process_coordinates, json_to_dataframe,
+    plot_data, compute_linear_fit, format_best_fit
+)
 
 statistics = Blueprint('statistics', __name__, template_folder='templates/_statistics')
 
@@ -15,6 +18,7 @@ def linear_regression():
     data_json = form.data_json.data
     scroll = None
     alpha, beta, r2 = None, None, None
+    line_of_best_fit = None
 
     if form.add_entry.data:
         form.coordinates.append_entry()
@@ -43,6 +47,8 @@ def linear_regression():
             flash('Warning: there was a division by 0 error. Make sure that you have multiple different x values in your data.')
 
         form.data_json.data = dumps(data)
+        line_of_best_fit = format_best_fit(alpha, beta)
+        scroll = "table"
 
     return render_template(
         'linear-regression.html',
@@ -51,6 +57,7 @@ def linear_regression():
         scroll = scroll,
         alpha = alpha,
         beta = beta,
+        line_of_best_fit = line_of_best_fit,
         r2 = r2
 )
 
