@@ -7,25 +7,17 @@ class CoordinateForm(FlaskForm):
     x_coordinate = DecimalField('x', validators=[Optional()])
     y_coordinate = DecimalField('y', validators=[Optional()])
 
-    def validate(self):
-        if not FlaskForm.validate(self):
-            return False
-
-        x = self.x_coordinate.data
-        y = self.y_coordinate.data
-
-        if (x and not y) or (y and not x):
-            return False
-
-        return True
-
     def __init__(self, *args, **kwargs):
         kwargs['csrf_enabled'] = False
         FlaskForm.__init__(self, *args, **kwargs)
 
 class LinearRegressionForm(FlaskForm):
     coordinates = FieldList(FormField(CoordinateForm), min_entries = 1, max_entries=1000)
-    form_initialized = HiddenField()
+
+    # This field will be set to true after the form is created, and will
+    # always stay true. The purpose of this field is to create 9 extra
+    # coordinate forms after the form is initialized.
+    form_initialized = HiddenField() 
     data_json = HiddenField()
 
     add_entry = SubmitField('Add row')
@@ -35,6 +27,7 @@ class LinearRegressionForm(FlaskForm):
 
     def __init__(self, *args, **kwargs):
         FlaskForm.__init__(self, *args, **kwargs)
+
         # Adds 9 more entries when the form is first created.
         if not self.form_initialized.data:
             for i in range(0, 9):
