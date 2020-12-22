@@ -1,6 +1,7 @@
 import simplejson as json
 from io import StringIO, BytesIO
 
+import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -35,26 +36,56 @@ def process_coordinates(coordinates):
             # the user later
             partial_entry_count += 1
 
-        data_json = json.dumps(data)
-
-    return data_json, partial_entry_count
+    return data, partial_entry_count
 
 def json_to_dataframe(data_json):
     data = json.load(StringIO(data_json))
     df = pd.DataFrame(data = data)
     return df
 
-def plot_data(df):
+def compute_linear_fit(data):
+    df = pd.DataFrame(data = data)
+    x_variance, y_variance = df.var()
+    covariance = df.cov()['x'].loc['y']
+
+    beta = covariance / x_variance
+    alpha = df['y'].mean() - beta * df['x'].mean()
+    
+    r = covariance / np.sqrt(x_variance * y_variance)
+    r2 = r ** 2
+
+    print(r2)
+    return alpha, beta, r2
+
+
+
+def plot_data(df, alpha, beta):
+    sns.set_style('ticks')
     fig, axes = plt.subplots(figsize = (2, 2))
     axes.set_xlabel('x')
     axes.set_ylabel('y')
-    sns.regplot(data = df,
-                x='x',
-                y='y',
-                ax=axes,
-                ci=None,
-                scatter_kws={'color': 'black'},
-                line_kws={'color': 'red'})
+
+    # Scatterplot
+    sns.scatterplot(
+        data = df,
+        x = 'x',
+        y = 'y',
+        ax = axes,
+        color = 'black',
+        s = 5               # marker size
+    )
+    
+    # Linear Fit
+    lower_x = df['x'].min()
+    upper_x = df['x'].max()
+    lower_y = df['y'].min()
+    upper_y = df['y'].max()
+    axes.plot(
+        [lower_x, upper_x],
+        [alpha + lower_x * beta, alpha + upper_x * beta],
+        linewidth = 0.5
+    )
+
     strIO = BytesIO()
     plt.savefig(strIO, dpi=300, bbox_inches='tight')
     return strIO

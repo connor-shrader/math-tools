@@ -1,8 +1,10 @@
 from flask import render_template, url_for, redirect, request, Blueprint, request, flash
 from project._statistics.forms import LinearRegressionForm
 from flask import Blueprint, render_template, redirect, url_for, send_file
+from math import isnan
+from simplejson import dumps
 
-from .linear_regression import process_coordinates, json_to_dataframe, plot_data
+from .linear_regression import process_coordinates, json_to_dataframe, plot_data, compute_linear_fit
 
 statistics = Blueprint('statistics', __name__, template_folder='templates/_statistics')
 
@@ -12,6 +14,7 @@ def linear_regression():
 
     data_json = form.data_json.data
     scroll = None
+    alpha, beta, r2 = None, None, None
 
     if form.add_entry.data:
         form.coordinates.append_entry()
@@ -28,17 +31,28 @@ def linear_regression():
         form.data_json.data = data_json
 
     elif form.submit.data:
-        form.data_json.data, partial_entry_count = process_coordinates(form.coordinates)
+        data, partial_entry_count = process_coordinates(form.coordinates)
         
         if partial_entry_count > 1:
             flash('Several of your ordered pairs are missing one of their coordinates, so they were ignored.')
         elif partial_entry_count == 1:
             flash('One of your ordered pairs is missing one of its coordinates, so it was ignored.')
 
-    return render_template('linear-regression.html',
-                            form = form, 
-                            length = len(form.coordinates),
-                            scroll = scroll)
+        alpha, beta, r2 = compute_linear_fit(data)
+        if isnan(beta) or isnan(r2):
+            flash('Warning: there was a division by 0 error. Make sure that you have multiple different x values in your data.')
+
+        form.data_json.data = dumps(data)
+
+    return render_template(
+        'linear-regression.html',
+        form = form, 
+        length = len(form.coordinates),
+        scroll = scroll,
+        alpha = alpha,
+        beta = beta,
+        r2 = r2
+)
 
 # @statistics.route('/test_img', methods=['GET', 'POST'])
 # def test_image():
@@ -58,8 +72,11 @@ def linear_regression():
 @statistics.route('/linear-regression/plot', methods=['GET', 'POST'])
 def linear_regression_plot():
     data_json = request.args.get('data_json')
+    alpha = float(request.args.get('alpha'))
+    beta = float(request.args.get('beta'))
+
     df = json_to_dataframe(data_json)
-    strIO = plot_data(df)
-    print(strIO)
+    strIO = plot_data(df, alpha, beta)
     strIO.seek(0)
+
     return send_file(strIO, mimetype='image/png')

@@ -1,11 +1,11 @@
 from flask_wtf import FlaskForm
-from wtforms import TextAreaField, SubmitField, FormField, FieldList, DecimalField, HiddenField
+from wtforms import TextAreaField, SubmitField, FormField, FieldList, FloatField, HiddenField
 from wtforms.validators import DataRequired, Optional
 from wtforms import ValidationError
 
 class CoordinateForm(FlaskForm):
-    x_coordinate = DecimalField('x', validators=[Optional()])
-    y_coordinate = DecimalField('y', validators=[Optional()])
+    x_coordinate = FloatField('x', validators=[Optional()])
+    y_coordinate = FloatField('y', validators=[Optional()])
 
     def __init__(self, *args, **kwargs):
         kwargs['csrf_enabled'] = False
