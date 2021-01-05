@@ -1,5 +1,15 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1>Hello world! YOU DID IT</h1>
+<main>
+    <div class="container">
+        <h1>Welcome to Math-Tools</h1>
+    </div>
+    <p>
+        Click <a href="{{ url_for('statistics.linear_regression') }}">here</a> to go to the linear regression calculator.
+    </p>
+    <p>
+        Click <a href="https://github.com/connor-shrader/math-tools">here</a> to see this website's GitHub page.
+    </p>
+</main>
 {% endblock %}

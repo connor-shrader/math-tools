@@ -4,7 +4,7 @@ This project is based off of my [old-math-tools](https://github.com/connor-shrad
 
 ## Tools
 
-Currently, the only tool I have up is a linear regression calculator (similar to the linear regression calculator on [old-math-tools](https://github.com/connor-shrader/old-math-tools). This calculator differs from the one on [old-math-tools](https://github.com/connor-shrader/old-math-tools) because it uses a better UI and the linear regression line is visualized using Matplotlib.
+Currently, the only tool I have up is a linear regression calculator (similar to the linear regression calculator on [old-math-tools](https://github.com/connor-shrader/old-math-tools)). This calculator differs from the one on [old-math-tools](https://github.com/connor-shrader/old-math-tools) because it uses a better UI and the linear regression line is visualized using Matplotlib.
 
 If I have time this semester, I will try to add more tools.
 
