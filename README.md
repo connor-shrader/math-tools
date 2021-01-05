@@ -10,7 +10,7 @@ If I have time this semester, I will try to add more tools.
 
 ## Configuration
 
-Some app configurations are shown in `config.py` in the main directory. However, some configurations (such as `SECRET_KEY`) must be kept hidden. Also, some configurations will differ between local and deployment versions (such as `DEBUG`). To resolve this issue, I have a two additional configuration files. The local version uses `local_config.py`, which I have in my `.gitignore` file. The deployment version uses `deploy_config.py`, which reads from environment variables.
+Some app configurations will be shown in `config.py` in the main directory. However, some configurations (such as `SECRET_KEY`) must be kept hidden. Also, some configurations will differ between local and deployment versions (such as `DEBUG`). To resolve this issue, I have a two additional configuration files. The local version uses `local_config.py`, which I have in my `.gitignore` file. The deployment version uses `deploy_config.py`, which reads from environment variables.
 
 ## Runtime and Required Libraries
 
