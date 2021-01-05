@@ -1,1 +1,3 @@
-# Nothing here yet!
+# config.py
+
+# This file will contain some configuration values.

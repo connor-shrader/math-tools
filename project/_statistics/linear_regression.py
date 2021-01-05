@@ -1,3 +1,7 @@
+# project / _statistics / linear_regression.py
+
+# This file contains functions necessary to compute and plot the linear regression best fit.
+
 import simplejson as json
 from io import StringIO, BytesIO
 
@@ -5,9 +9,6 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
-
-def validate_inputs():
-    pass
 
 def process_coordinates(coordinates):
     '''
@@ -39,11 +40,22 @@ def process_coordinates(coordinates):
     return data, partial_entry_count
 
 def json_to_dataframe(data_json):
+    """
+    This function creates a pandas dataframe from a JSON string
+    """
     data = json.load(StringIO(data_json))
     df = pd.DataFrame(data = data)
     return df
 
 def compute_linear_fit(data):
+    """
+    This function returns a tuple (alpha, beta, r2).
+
+    alpha is the constant coefficient and beta is the linear coefficient for the line of best fit.
+    For example, if the line of best fit is y = 5x + 3, alpha == 3 and beta == 5.
+
+    r2 is the coefficient of determination (the correlation between the variables).
+    """
     df = pd.DataFrame(data = data)
     x_variance, y_variance = df.var()
     covariance = df.cov()['x'].loc['y']
@@ -63,6 +75,12 @@ def compute_linear_fit(data):
     return alpha, beta, r2
 
 def format_best_fit(alpha, beta):
+    """
+    This function inputs alpha and beta (see compute_linear_fit) and outputs a string
+    that represents this function.
+
+    For example, format_best_fit(3, 5) == 'y = 5x + 3'
+    """
     return_string = 'y = '
 
     if beta < 0:
@@ -84,6 +102,10 @@ def format_best_fit(alpha, beta):
     return return_string
 
 def plot_data(df, alpha, beta):
+    """
+    This function takes in a pandas DataFrame with the coordinate pairs, as
+    well as alpha and beta from compute_linear_fit, and plots a scatterplot and linear plot.
+    """
     fig, axes = plt.subplots(figsize = (2, 2))
     axes.set_xlabel('x')
     axes.set_ylabel('y')

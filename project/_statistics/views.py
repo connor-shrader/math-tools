@@ -1,3 +1,7 @@
+# project / _statistics / views.py
+
+# This file contains the views specific to statistics.
+
 from flask import render_template, url_for, redirect, request, Blueprint, request, flash
 from project._statistics.forms import LinearRegressionForm
 from flask import Blueprint, render_template, redirect, url_for, send_file
@@ -13,6 +17,9 @@ statistics = Blueprint('statistics', __name__, template_folder='templates/_stati
 
 @statistics.route('/linear-regression', methods=['GET', 'POST'])
 def linear_regression():
+    """
+    Loads the page to compute a simple linear regression model.
+    """
     form = LinearRegressionForm()
 
     data_json = form.data_json.data
@@ -61,7 +68,7 @@ def linear_regression():
             invalid_line = True
 
     return render_template(
-        'linear-regression.html',
+        'linear_regression.html',
         form = form, 
         length = len(form.coordinates),
         scroll = scroll,
@@ -72,23 +79,11 @@ def linear_regression():
         invalid_line = invalid_line
 )
 
-# @statistics.route('/test_img', methods=['GET', 'POST'])
-# def test_image():
-#     scalar = float(request.args.get('scalar'))
-#     print(type(scalar))
-#     fig = plt.figure(figsize=(1,1), dpi=300)
-#     axes = fig.add_axes([0, 0, 1, 1])
-#     x = np.linspace(0, 10, 101)
-#     y = x ** scalar
-#     axes.plot(x,y)
-    
-#     strIO = BytesIO()
-#     plt.savefig(strIO, dpi=fig.dpi)
-#     strIO.seek(0)
-#     return send_file(strIO, mimetype='image/png')
-
 @statistics.route('/linear-regression/plot', methods=['GET', 'POST'])
 def linear_regression_plot():
+    """
+    Returns an image of a linear regression model.
+    """
     data_json = request.args.get('data_json')
     alpha = request.args.get('alpha')
     beta = request.args.get('beta')

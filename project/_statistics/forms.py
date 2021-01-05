@@ -4,6 +4,9 @@ from wtforms.validators import DataRequired, Optional
 from wtforms import ValidationError
 
 class CoordinateForm(FlaskForm):
+    """
+    Form used to enter a single coordinate pair.
+    """
     x_coordinate = FloatField('x', validators=[Optional()])
     y_coordinate = FloatField('y', validators=[Optional()])
 
@@ -12,12 +15,17 @@ class CoordinateForm(FlaskForm):
         FlaskForm.__init__(self, *args, **kwargs)
 
 class LinearRegressionForm(FlaskForm):
+    """
+    Form that contains a collection of CoordinateForms.
+    """
     coordinates = FieldList(FormField(CoordinateForm), min_entries = 2, max_entries=1000)
 
     # This field will be set to true after the form is created, and will
     # always stay true. The purpose of this field is to create 9 extra
     # coordinate forms after the form is initialized.
     form_initialized = HiddenField() 
+
+    # data_json holds information needed to generate the linear regression image.
     data_json = HiddenField()
 
     add_entry = SubmitField('Add row')
