@@ -2,6 +2,10 @@
 
 This project is based off of my [old-math-tools](https://github.com/connor-shrader/old-math-tools) repository, where I made calculators for linear regression and modular exponentiation. This project differs from [old-math-tools](https://github.com/connor-shrader/old-math-tools) because it uses the Flask microframework. This will allow me to make more sophisticated programs, because I will have easy access to Python.
 
+## Accessing the Website
+
+The website can be accessed at [http://shrader-math-tools.herokuapp.com/](http://shrader-math-tools.herokuapp.com/). I deployed the website using [Heroku](https://heroku.com/).
+
 ## Tools
 
 Currently, the only tool I have up is a linear regression calculator (similar to the linear regression calculator on [old-math-tools](https://github.com/connor-shrader/old-math-tools)). This calculator differs from the one on [old-math-tools](https://github.com/connor-shrader/old-math-tools) because it uses a better UI and the linear regression line is visualized using Matplotlib.
