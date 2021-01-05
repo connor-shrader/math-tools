@@ -40,7 +40,7 @@ conda activate my-new-environment
 pip install -r requirements.txt
 ```
 
-4. Edit `deploy_config.py` to contain your own configuration values. Alternatively, you can create an `instance` folder in the main directory with a new `config.py` file. In either case, you should set values for all configurations you see in `deploy_config.py`, except possibly the MailGrid settings if you do not use MailGrid. For more information about a specific configuration, refer to the documentation for the library that uses the configuration.
+4. Edit `deploy_config.py` to contain your own configuration values. Alternatively, you can create a `local_config.py` file in the same directory. In either case, you should set values for all configurations you see in `deploy_config.py`. For more information about a specific configuration, refer to the documentation for the library that uses the configuration.
 
 5. Run the server
 
